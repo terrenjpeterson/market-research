@@ -20,16 +20,23 @@ Further references.
 
 */
 
+// includes required node.js packages
+
 var util = require('util');
 var fs = require('fs');
 var rest = require('restler');
 var csv = require('csv');
 var accounting = require('accounting');
+
+// set variables
+
 var CSVFILE_DEFAULT = "market-research.csv";
 var SYMBOLS_DEFAULT = ["GOOG", "FB", "AAPL", "YHOO", "MSFT", "LNKD", "CRM"];
 var COLUMNS_DEFAULT = 'snj1pr'; // http://greenido.wordpress.com/2009/12/22/yahoo-finance-hidden-api
 var HEADERS_DEFAULT = ["Symbol", "Name", "Market Cap", "Previous Close Price", 
                        "P/E Ratio", "Shares", "EPS", "Earnings"];
+
+// function to prepare string based on stock symbols
 
 var financeurl = function(symbols, columns) {
     return util.format(
@@ -38,9 +45,13 @@ var financeurl = function(symbols, columns) {
         columns);
 };
 
+// function to convert a string to a dollar amount
+
 var marketCapFloat = function(marketCapString) {
     return parseFloat(marketCapString.split('B')[0]) * 1e9;
 };
+
+// function to format print lines for the console
 
 var csv2console = function(csvfile, headers) {
     console.log(headers.join("\t"));
@@ -55,6 +66,8 @@ var csv2console = function(csvfile, headers) {
     });
 };
 
+// handler for processing http response
+
 var buildfn = function(csvfile, headers) {
     var response2console = function(result, response) {
         if (result instanceof Error) {
@@ -67,6 +80,8 @@ var buildfn = function(csvfile, headers) {
     };
     return response2console;
 };
+
+// function that executes the yahoo finance call
 
 var marketResearch = function(symbols, columns, csvfile, headers) {
     symbols = symbols || SYMBOLS_DEFAULT;
